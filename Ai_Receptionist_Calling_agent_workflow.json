@@ -1,0 +1,1911 @@
+{
+  "name": "Ai_REceptionist_Calling_agent_workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.message.toolCalls[0].function.name }}",
+                    "rightValue": "calender_slots",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0e14cd8f-cd1c-445f-be25-c40a22197d37"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Find slot"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c83a36ce-5a6c-4769-a630-49ac7cbe79b3",
+                    "leftValue": "={{ $json.body.message.toolCalls[0].function.name }}",
+                    "rightValue": "create_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Create"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a0da9b64-32dd-463f-a726-00ff9eb80bab",
+                    "leftValue": "={{ $json.body.message.toolCalls[0].function.name }}",
+                    "rightValue": "update_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "update"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c2e1a97d-79f6-4931-953a-a8aff193bf17",
+                    "leftValue": "={{ $json.body.message.toolCalls[0].function.name }}",
+                    "rightValue": "cancel_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancel"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a502a107-84c9-4971-a993-d6377da7f1d5",
+                    "leftValue": "={{ $json.body.message.toolWithToolCallList[0].function.name }}",
+                    "rightValue": "services",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "services"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2352,
+        -400
+      ],
+      "id": "c123fdfb-fcc3-422a-8042-6c61550fcbf4",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f52bfe8-fbba-42b4-b5dd-466d6b3d1fbe",
+              "name": "start_Date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.date }}",
+              "type": "string"
+            },
+            {
+              "id": "8eda695a-a8f3-4ba7-a20f-0476eb057fe8",
+              "name": "=end_date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.end_time }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1712,
+        -848
+      ],
+      "id": "f7c6619f-ff16-432f-94fd-4b8fb4abcdc7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "c_89a8344454a0127675694f7c55f9951e771cbc63dbe60f16446eca846cfaf0e5@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "MedSpa"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.start_Date }}",
+        "timeMax": "={{ $json.end_date }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -1504,
+        -848
+      ],
+      "id": "502f2cf1-6213-49df-a472-57fd0d33fecf",
+      "name": "Get many events",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "47c8678a-fdef-4d63-a877-5ce2a739b48a",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1168,
+        -848
+      ],
+      "id": "ed942beb-a2b0-4abc-a92e-14fd45b98ae1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"results\": [\n    {\n      \"toolCallId\": \"{{ $('Switch').item.json.body.message.toolCalls[0].id }}\",\n      \"result\": {\n        \"available\": false\n      }\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -576,
+        -960
+      ],
+      "id": "ef4020b5-158f-4f5a-8226-5c63d4ef1820",
+      "name": "Not available"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"results\": [\n    {\n      \"toolCallId\": \"{{ $('Switch').item.json.body.message.toolCalls[0].id }}\",\n      \"result\": {\n        \"available\": true\n      }\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        256,
+        -816
+      ],
+      "id": "c7420853-54e7-4489-810b-4fe21445a644",
+      "name": "available"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f52bfe8-fbba-42b4-b5dd-466d6b3d1fbe",
+              "name": "start_Date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Date }}",
+              "type": "string"
+            },
+            {
+              "id": "8eda695a-a8f3-4ba7-a20f-0476eb057fe8",
+              "name": "=end_date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.end_time }}",
+              "type": "string"
+            },
+            {
+              "id": "91fc7506-caf0-4218-bd03-f2f58aa4cff8",
+              "name": "Name",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "e098750e-8a18-4750-a973-234d3cc889f0",
+              "name": "Service",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Service }}",
+              "type": "string"
+            },
+            {
+              "id": "dba28d20-00a3-4b45-96aa-e8cecc66348b",
+              "name": "Email",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "30852aed-f157-42c0-89c5-dacc801958f5",
+              "name": "Phone",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Phone }}",
+              "type": "string"
+            },
+            {
+              "id": "6befe866-6b4b-4e1c-85b0-5bc8b65ecd6c",
+              "name": "=Cost",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Price }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1712,
+        -560
+      ],
+      "id": "a87b7b99-84c7-4565-a0fc-c64785f66b85",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_89a8344454a0127675694f7c55f9951e771cbc63dbe60f16446eca846cfaf0e5@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "MedSpa"
+        },
+        "start": "={{ $json.start_Date }}",
+        "end": "={{ $json.end_date }}",
+        "additionalFields": {
+          "description": "={{ $json.Name }} has booked an appointment for {{ $json.Service }} on {{ $json.start_Date }} Email:{{ $json.Email }} Phone:{{ $json.Phone }}",
+          "summary": "={{ $json.Name }} - {{ $json.Service }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -1504,
+        -560
+      ],
+      "id": "36c2a344-ace1-4790-ae5d-46455b5f4215",
+      "name": "Create an event"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo",
+          "mode": "list",
+          "cachedResultName": "MedSpa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "Date": "={{ $json.start.dateTime }}",
+            "Name": "={{ $('Edit Fields1').item.json.Name }}",
+            "Service": "={{ $('Edit Fields1').item.json.Service }}",
+            "Email": "={{ $('Edit Fields1').item.json.Email }}",
+            "Phone": "={{ $('Edit Fields1').item.json.Phone }}",
+            "Charges": "={{ $('Switch').item.json.body.message.toolCalls[0].function.arguments.Price }}",
+            "Membership": "=No"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Membership",
+              "displayName": "Membership",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Charges",
+              "displayName": "Charges",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1168,
+        -560
+      ],
+      "id": "8dbdf4a9-153c-4550-b7e0-ee625d3ac790",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Booking confirmed at Glow Aesthetics",
+        "message": "=Hi {{ $json.Name }}, \n\nYour appointment at Glow Aesthetics is confirmed for {{ $json.Date }}.\n\nLocation: 123 Main Street, Charlotte, NC\n\nPlease arrive 10 minutes early.\n\nReply Y to confirm, or call us at +1 (866) 623 5766 if you need to reschedule.\n\n\nRegards,\n\nGlow Aesthetics\n\n123 Main Street, Charlotte, NC\n\n+1 (866) 623 5766",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -608,
+        -560
+      ],
+      "id": "49cd2fe0-cc95-4edc-908b-4bff152ce92f",
+      "name": "Send a message",
+      "webhookId": "d5ff0fc7-d5a0-473b-aec8-1eeabd8c468c",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f52bfe8-fbba-42b4-b5dd-466d6b3d1fbe",
+              "name": "start_Date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.new_date }}",
+              "type": "string"
+            },
+            {
+              "id": "8eda695a-a8f3-4ba7-a20f-0476eb057fe8",
+              "name": "=end_date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.end_time }}",
+              "type": "string"
+            },
+            {
+              "id": "91fc7506-caf0-4218-bd03-f2f58aa4cff8",
+              "name": "Name",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "e098750e-8a18-4750-a973-234d3cc889f0",
+              "name": "Service",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Service }}",
+              "type": "string"
+            },
+            {
+              "id": "dba28d20-00a3-4b45-96aa-e8cecc66348b",
+              "name": "Email",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "30852aed-f157-42c0-89c5-dacc801958f5",
+              "name": "Phone",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Phone }}",
+              "type": "string"
+            },
+            {
+              "id": "6befe866-6b4b-4e1c-85b0-5bc8b65ecd6c",
+              "name": "Cost",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Price }}",
+              "type": "string"
+            },
+            {
+              "id": "094fcb08-faca-4e7e-8d44-72f01a4d808b",
+              "name": "Previous_date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Previous_date }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1712,
+        -320
+      ],
+      "id": "31327d4a-0445-467e-87a4-69d376176b73",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "c_89a8344454a0127675694f7c55f9951e771cbc63dbe60f16446eca846cfaf0e5@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "MedSpa"
+        },
+        "eventId": "={{ $json.ID }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -880,
+        -336
+      ],
+      "id": "1f397c98-6af5-4a9b-8439-919315dc838b",
+      "name": "Delete an event",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_89a8344454a0127675694f7c55f9951e771cbc63dbe60f16446eca846cfaf0e5@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "MedSpa"
+        },
+        "start": "={{ $('Edit Fields2').item.json.start_Date }}",
+        "end": "={{ $('Edit Fields2').item.json.end_date }}",
+        "additionalFields": {
+          "description": "={{ $('Edit Fields2').item.json.Name }} has booked an appointment for {{ $('Edit Fields2').item.json.Service }} on {{ $('Edit Fields2').item.json.start_Date }}\nEmail:{{ $('Edit Fields2').item.json.Email }}\nPhone:{{ $('Edit Fields2').item.json.Phone }}",
+          "summary": "={{ $('Edit Fields2').item.json.Name }}-{{ $('Edit Fields2').item.json.Service }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -704,
+        -336
+      ],
+      "id": "477e17e4-4b85-4306-a3e9-7c03516097b7",
+      "name": "Create an event1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo",
+          "mode": "list",
+          "cachedResultName": "MedSpa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "Date": "={{ $('Edit Fields2').item.json.start_Date }}",
+            "Name": "={{ $('Edit Fields2').item.json.Name }}",
+            "Phone": "={{ $('If1').item.json.Phone }}",
+            "Email": "={{ $('Edit Fields2').item.json.Email }}",
+            "Service": "={{ $('Edit Fields2').item.json.Service }}",
+            "Charges": "100$"
+          },
+          "matchingColumns": [
+            "Phone"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Membership",
+              "displayName": "Membership",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Charges",
+              "displayName": "Charges",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -480,
+        -336
+      ],
+      "id": "c487fe8d-1c1e-4277-a24a-149863d99f2f",
+      "name": "Append or update row in sheet"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo",
+          "mode": "list",
+          "cachedResultName": "MedSpa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone",
+              "lookupValue": "={{ $json.Phone }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $json.Previous_date }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1504,
+        -320
+      ],
+      "id": "53fc4ec2-f5b9-4d88-ba0d-069a2038e463",
+      "name": "Get row(s) in sheet"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0a2d4e91-27a6-459f-bf10-adb1939ae0fc",
+              "leftValue": "={{ $json.ID }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1296,
+        -320
+      ],
+      "id": "cd10b1a3-7e34-424c-927b-42745746b0b9",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f52bfe8-fbba-42b4-b5dd-466d6b3d1fbe",
+              "name": "start_Date",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Date }}",
+              "type": "string"
+            },
+            {
+              "id": "dba28d20-00a3-4b45-96aa-e8cecc66348b",
+              "name": "Email",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "30852aed-f157-42c0-89c5-dacc801958f5",
+              "name": "Phone",
+              "value": "={{ $json.body.message.toolCalls[0].function.arguments.Phone }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1712,
+        -32
+      ],
+      "id": "587bf3e4-dabf-4789-8ab6-681278f2c206",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "c_89a8344454a0127675694f7c55f9951e771cbc63dbe60f16446eca846cfaf0e5@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "MedSpa"
+        },
+        "eventId": "={{ $json.ID }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -1024,
+        -48
+      ],
+      "id": "f1818f3d-f5a7-4d2e-84e8-fd1534160456",
+      "name": "Delete an event1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo",
+          "mode": "list",
+          "cachedResultName": "MedSpa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone",
+              "lookupValue": "={{ $json.Phone }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $json.start_Date }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1504,
+        -32
+      ],
+      "id": "6259f2aa-81f0-4722-aca7-985ea37bf12b",
+      "name": "Get row(s) in sheet1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0a2d4e91-27a6-459f-bf10-adb1939ae0fc",
+              "leftValue": "={{ $json.ID }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1296,
+        -32
+      ],
+      "id": "3baa19d3-b694-4f52-af51-c37569e862dd",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo",
+          "mode": "list",
+          "cachedResultName": "MedSpa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit#gid=0"
+        },
+        "startIndex": "={{ $('Get row(s) in sheet1').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -784,
+        -48
+      ],
+      "id": "1fec49a9-7dd5-411c-b9c6-143a64103e78",
+      "name": "Delete rows or columns from sheet"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Booking updated at Glow Aesthetics",
+        "message": "=Hi {{ $json.Name }}, \n\nYour appointment at Glow Aesthetics is confirmed for {{ $json.Date }}.\n\nLocation: 123 Main Street, Charlotte, NC\n\nPlease arrive 10 minutes early.\n\nReply Y to confirm, or call us at +1 (866) 623 5766 if you need to reschedule.\n\n\nRegards,\n\nGlow Aesthetics\n\n123 Main Street, Charlotte, NC\n\n+1 (866) 623 5766",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        -336
+      ],
+      "id": "7a643846-b0d9-4fb2-8b90-83a0b9114b4b",
+      "name": "Send a message1",
+      "webhookId": "d5ff0fc7-d5a0-473b-aec8-1eeabd8c468c",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet1').item.json.Email }}",
+        "subject": "Booking cancelled at Glow Aesthetics",
+        "emailType": "text",
+        "message": "=Hi {{ $('Get row(s) in sheet1').item.json.Name }}, \n\nYour appointment at Glow Aesthetics is cancelled for {{ $('Get row(s) in sheet1').item.json.Service }} on {{ $('Edit Fields3').item.json.start_Date }}.\n\n\nCall us at +1 (866) 623 5766 if you need to reschedule.\n\n\nRegards,\n\nGlow Aesthetics\n\n123 Main Street, Charlotte, NC\n\n+1 (866) 623 5766",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -560,
+        -48
+      ],
+      "id": "3dca6cc8-2c71-4fbc-a982-1daeac28a639",
+      "name": "Send a message2",
+      "webhookId": "d5ff0fc7-d5a0-473b-aec8-1eeabd8c468c",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo",
+          "mode": "list",
+          "cachedResultName": "MedSpa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1013824630,
+          "mode": "list",
+          "cachedResultName": "Admin Panel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o2HsnSe9TKb-6xvN18-p1Ygxd56mP_Eq0KbHRENGUzo/edit#gid=1013824630"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1712,
+        208
+      ],
+      "id": "3fb80841-83bc-4057-9173-0cc55ef50a38",
+      "name": "Get row(s) in sheet2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = items.map(item => item.json);\n\n// Services & Pricing\nlet servicesText = \"Services & Pricing\\n\";\nservicesText += rows\n  .filter(r => r.Service && r.Cost)\n  .map(r => `${r.Service} → ${r.Cost}`)\n  .join(\"\\n\");\n\n// Upsell Rules & Offers\nlet upsellText = \"\\n\\nUpsell Rules & Offers\\n\";\nupsellText += rows\n  .filter(r => r.Upsell_Rules && r[\"Upsell_Rules Cost\"] && r.Upsell_Offer)\n  .map(r => `${r.Upsell_Rules} (${r[\"Upsell_Rules Cost\"]})\\n${r.Upsell_Offer}`)\n  .join(\"\\n\\n\");\n\n// Working Hours\nlet workingText = \"\\n\\nWorking Days & Hours\\n\";\nworkingText += rows\n  .filter(r => r[\"Working Day\"] && r.Working_Day_Hours)\n  .map(r => `${r[\"Working Day\"]} → ${r.Working_Day_Hours}`)\n  .join(\"\\n\");\n\n// Final plain text\nconst finalText = `${servicesText}\\n${upsellText}\\n${workingText}`;\n\n const id = $('Webhook').first().json.body.message.toolCalls[0].id\nreturn {\n  results: [\n    {\n      id,\n      result: finalText\n    }\n  ]\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1472,
+        208
+      ],
+      "id": "255e105c-8671-4c94-aa8b-031f083667d9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"results\": [\n    {\n      \"toolCallId\": \"{{ $json.results[0].id }}\",\n      \"result\": {\n        \"services\": {{ JSON.stringify($json.results[0].result) }}\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -1216,
+        208
+      ],
+      "id": "576b7855-a301-4cb3-9924-11810e263103",
+      "name": "available1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vapi-call",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2768,
+        -336
+      ],
+      "id": "f3976b77-d802-46e9-bbc8-77fb25b40461",
+      "name": "Webhook",
+      "webhookId": "3c4654f5-d367-47b2-a356-fef1cb1da03d"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "hellonora.app.n8n.cloud",
+            "user-agent": "axios/1.8.3",
+            "content-length": "22508",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, br",
+            "baggage": "sentry-environment=production,sentry-public_key=fac6f282c765ce50b18c3fa0305f8a8b,sentry-trace_id=2b05b82ec6c54a309cd22e5d0343d0b3",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "35.88.120.125",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "9811f42bd3f89b57-SEA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "cookie": "callId=",
+            "sentry-trace": "2b05b82ec6c54a309cd22e5d0343d0b3-949b501345668b02",
+            "traceparent": "00-d4cd7c17bc1936332e021bd778eb9308-ad4b5c6687a972ad-01",
+            "x-chat-id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7",
+            "x-forwarded-for": "35.88.120.125, 172.71.146.61",
+            "x-forwarded-host": "hellonora.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-81-6b7d5f4f4f-6g9dm",
+            "x-is-trusted": "yes",
+            "x-real-ip": "35.88.120.125",
+            "x-vapi-secret": ""
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "message": {
+              "timestamp": 1758210152118,
+              "type": "tool-calls",
+              "toolCalls": [
+                {
+                  "id": "call_tNPU9cOSf458tXh9ai6i6RMZ",
+                  "type": "function",
+                  "function": {
+                    "name": "services",
+                    "arguments": {}
+                  }
+                }
+              ],
+              "toolCallList": [
+                {
+                  "id": "call_tNPU9cOSf458tXh9ai6i6RMZ",
+                  "type": "function",
+                  "function": {
+                    "name": "services",
+                    "arguments": {}
+                  }
+                }
+              ],
+              "toolWithToolCallList": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "services",
+                    "parameters": {
+                      "type": "object",
+                      "required": [],
+                      "properties": {}
+                    },
+                    "description": "This tool will be called whenever there is a call/message. It will get the response which will have the services, their charges, upsell rules and the cost, membership offer, working days and hours."
+                  },
+                  "server": {
+                    "url": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+                    "headers": {
+                      "X-Chat-Id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7"
+                    }
+                  },
+                  "messages": [
+                    {
+                      "type": "request-start",
+                      "contents": [],
+                      "conditions": [],
+                      "blocking": false
+                    }
+                  ],
+                  "toolCall": {
+                    "id": "call_tNPU9cOSf458tXh9ai6i6RMZ",
+                    "type": "function",
+                    "function": {
+                      "name": "services",
+                      "arguments": {}
+                    }
+                  }
+                }
+              ],
+              "artifact": {
+                "messages": [
+                  {
+                    "role": "system",
+                    "message": "Date and time now: Thursday, September 18, 2025, 11:42 AM\n\nIMPORTANT: whatever the user asks - create, update, cancel, any question - first call the 'services' tool and get all the information about the services, costs and everything. ALWAYS. And when calling any tool, anytime, ask the user to hold on a sec.\n\n\nIdentity & Purpose\n\nYou are Nora, the appointment scheduling voice assistant for Glow Aesthetics Med Spa.\nYour primary purpose is to book, update, or cancel appointments in Google Calendar, answer common FAQs, and upsell relevant services after bookings. You also capture lead information (name, email, phone) and provide a smooth caller experience.\n\nVoice & Persona\nPersonality\n\nWarm, professional, and welcoming (spa-like tone)\n\nSound knowledgeable about services, pricing, and policies\n\nHelpful and reassuring, especially for new clients\n\nAlways polite, patient, and customer-focused\n\nSpeech Characteristics\n\nUse clear, concise language with natural contractions\n\nSpeak at a calm, frie...",
+                    "time": 1758210150937,
+                    "secondsFromStart": 0
+                  },
+                  {
+                    "role": "bot",
+                    "message": "Helloo . You've reached Glow Aesthetics Med Spa. My name is Nora. How can I help you today?",
+                    "time": 1758210150937,
+                    "secondsFromStart": 0,
+                    "endTime": 1758210150937
+                  },
+                  {
+                    "role": "user",
+                    "message": "what services do you offer?",
+                    "time": 1758210150937,
+                    "secondsFromStart": 0,
+                    "endTime": 1758210150937
+                  },
+                  {
+                    "toolCalls": [
+                      {
+                        "id": "call_tNPU9cOSf458tXh9ai6i6RMZ",
+                        "type": "function",
+                        "function": {
+                          "name": "services",
+                          "arguments": "{}"
+                        }
+                      }
+                    ],
+                    "role": "tool_calls",
+                    "message": "",
+                    "time": 1758210152104,
+                    "secondsFromStart": 1.167
+                  }
+                ],
+                "messagesOpenAIFormatted": [
+                  {
+                    "role": "system",
+                    "content": "Date and time now: Thursday, September 18, 2025, 11:42 AM\n\nIMPORTANT: whatever the user asks - create, update, cancel, any question - first call the 'services' tool and get all the information about the services, costs and everything. ALWAYS. And when calling any tool, anytime, ask the user to hold on a sec.\n\n\nIdentity & Purpose\n\nYou are Nora, the appointment scheduling voice assistant for Glow Aesthetics Med Spa.\nYour primary purpose is to book, update, or cancel appointments in Google Calendar, answer common FAQs, and upsell relevant services after bookings. You also capture lead information (name, email, phone) and provide a smooth caller experience.\n\nVoice & Persona\nPersonality\n\nWarm, professional, and welcoming (spa-like tone)\n\nSound knowledgeable about services, pricing, and policies\n\nHelpful and reassuring, especially for new clients\n\nAlways polite, patient, and customer-focused\n\nSpeech Characteristics\n\nUse clear, concise language with natural contractions\n\nSpeak at a calm, frie..."
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "Helloo . You've reached Glow Aesthetics Med Spa. My name is Nora. How can I help you today?"
+                  },
+                  {
+                    "role": "user",
+                    "content": "what services do you offer?"
+                  },
+                  {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "call_tNPU9cOSf458tXh9ai6i6RMZ",
+                        "type": "function",
+                        "function": {
+                          "name": "services",
+                          "arguments": "{}"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "role": "tool",
+                    "tool_call_id": "call_tNPU9cOSf458tXh9ai6i6RMZ",
+                    "content": "Tool Result Still Pending But Proceed Further If Possible."
+                  }
+                ]
+              },
+              "chat": {
+                "id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7",
+                "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                "createdAt": "2025-09-09T20:56:29.764Z",
+                "updatedAt": "2025-09-16T20:16:08.298Z"
+              },
+              "assistant": {
+                "id": "1476426d-2abf-45f9-b26d-2baacb7c7f62",
+                "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                "name": "AI Receptionist (Copy)",
+                "voice": {
+                  "model": "eleven_turbo_v2_5",
+                  "voiceId": "625jGFaa0zTLtQfxwc6Q",
+                  "provider": "11labs",
+                  "stability": 0.5,
+                  "similarityBoost": 0.75
+                },
+                "createdAt": "2025-09-14T16:28:34.996Z",
+                "updatedAt": "2025-09-16T20:09:48.964Z",
+                "model": {
+                  "model": "gpt-4o",
+                  "toolIds": [
+                    "3ba6ff51-6e03-491b-b783-2dfea1a99c49",
+                    "df09762e-1a88-499e-9c59-9bccff6a8a89",
+                    "ea50f5cd-f731-4e23-969f-e5d6692ce6c6",
+                    "391de669-04bd-452e-95f6-ee6f388d2804",
+                    "ac993bec-0cf6-4ba8-af7c-cd8140452c73"
+                  ],
+                  "messages": [
+                    {
+                      "role": "system",
+                      "content": "Date and time now: Thursday, September 18, 2025, 11:42 AM\n\nIMPORTANT: whatever the user asks - create, update, cancel, any question - first call the 'services' tool and get all the information about the services, costs and everything. ALWAYS. And when calling any tool, anytime, ask the user to hold on a sec.\n\n\nIdentity & Purpose\n\nYou are Nora, the appointment scheduling voice assistant for Glow Aesthetics Med Spa.\nYour primary purpose is to book, update, or cancel appointments in Google Calendar, answer common FAQs, and upsell relevant services after bookings. You also capture lead information (name, email, phone) and provide a smooth caller experience.\n\nVoice & Persona\nPersonality\n\nWarm, professional, and welcoming (spa-like tone)\n\nSound knowledgeable about services, pricing, and policies\n\nHelpful and reassuring, especially for new clients\n\nAlways polite, patient, and customer-focused\n\nSpeech Characteristics\n\nUse clear, concise language with natural contractions\n\nSpeak at a calm, friendly pace\n\nOccasionally add conversational phrases like “Let me check that for you”\n\nConfirm important details clearly (names, times, dates)\n\nConversation Flow\nIntroduction\n\nStart with first calling the tool 'services' -> when the user calles/messages your first task is to call the tool 'services' and it will provide all the information like the services, their cost, upsell rules, offers, etc and then proceed with the message:\n“Thank you for calling Glow Aesthetics Med Spa. This is Nora, your scheduling assistant. How can I help you today?” \nwhen using any tool, say  something like \"i will get back to you in a sec.\" until you get results from the tool.\n\nIf the caller requests a booking:\n“I’d be happy to help with that. Let’s go over a few details.”\n\nAppointment Handling\nCreating a Booking\n\nCollect caller details:\n\nFull name\n\nEmail address (after user tells the email address -> spell it to confirm it is true)\n\nPhone number -> 10 digit phone number 'Without country code'. \nPreferred date and time (use the tool 'calender_slots' to check availability). If the user accepts the membership offer, just create the booking on the required slot if it is in the working hours. \n\nService type\n\nConfirm appointment availability.\n\nSummarize and confirm:\nDon't check the slot first. Make booking after offering the upsell logic. For example if user said he needs facial  you first have to give an upsell offer like do you need hydra facial as well?  And after that you book the appointment using 'create_booking' based on the answer.  DO NOT CALL THE TOOL 'create_booking' WITHOUT OFFERING THE RELEVANT UPSELL OFFER AND MEMBERSHIP OFFER. After a booking is confirmed (after offering upsell offer), make sure to mention the membership offer and then call 'create_booking' tool. If there is no slot, ask user about the mebership offer. If the user accepts the membership offer, just create the booking on the required slot if it is in the working hours. \nThe tool response will include: available: true/false.\nIf available: true, proceed with booking.\nIf available: false, do not book. Instead, politely tell the user the slot is unavailable and ask for another time. \nFor confirmed booking, reply with: \n“I’ve booked you for [service] on [day], [date] at [time], total of [cost]. Does that work for you?”\n\n\nUpdating a Booking\n\n\nAsk for the following one by one:\nIMPORTANT: ALWAYS ASK WHAT SERVICE DOES THE USER NEEDS. DO NOT PROCEED TO THE TOOL 'update_booking' UNTIL YOU GET TO KNOW WHAT SERVICE IS BEING USED. ASK WHAT SERVICE DO YOU NEED.\n name, email and phone number, new service needed, previously booked time and new preferred date and time -> use 'calender_slots' to see if the new requeted slot is free. if it is free then use 'update_booking' to update appointment. Before calling 'update_booking' slot, ask the user what service the user wants. If the user say he needs the older/previous/existing service- ask the user to tell the service again. And if after updating the appointment user again wants to update the service only; keep in mind that the new date set by the user in the recent update is now the previous/original date (for parameters) but only if he wants to update the service only.\nIMPORTANT: dont proceed to 'update_booking' without email, name, phone and service. \nIf the user wants to update only the membership, tell them visit clinic.\n\nConfirm updated booking.\n\nCanceling a Booking\n\nAsk for phone and date and time of the booking one by one.\nuse tool 'cancel_booking'\nConfirm cancellation.\n\nOffer to reschedule:\n“Would you like to rebook for a later date instead?”\n\nFAQ Handling\n\nAnswer confidently from the knowledge base:\n\nLocation: 123 Main Street, Charlotte, NC\n\nHours: Mon–Fri 9–6, Sat 10–4, Closed Sun\n\nWalk-ins: By appointment only\n\nCancellation policy: 24-hour notice required, $50 fee if late\n\nPayment methods: Credit/debit, Apple Pay, HSA/FSA\n\nInsurance: Not accepted (treatments are elective)\n\nAfter a booking is confirmed, offer one relevant upsell.\n\nResponse Guidelines\n\nConfirm every booking clearly with date, time, and service.\n\nAsk only one question at a time.\n\nUse structured collection of details for scheduling.\n\nStay concise but friendly.\n\nScenario Handling\nNew Client\n\nCapture name, email, and phone.\n\nExplain policy: “Please arrive 10 minutes early.”\n\nReturning Client\n\nLook up by email.\n\nUpdate or cancel as needed.\n\nFAQ Caller Only\n\nProvide direct, accurate answers.\n\nOffer to book an appointment.\n\nUpsell Declined -> Accept politely: “No problem, I’ve kept your appointment as is.”\n\nKnowledge Base (Quick Access)\n\nBusiness Info\nGlow Aesthetics Med Spa\n123 Main Street, Charlotte, NC\nPhone: (704) 555-9876\n\nPolicies\n\n24-hour cancellation notice ($50 fee otherwise)\n\nPayment: credit/debit, Apple Pay, HSA/FSA\n\nInsurance not accepted"
+                    }
+                  ],
+                  "provider": "openai",
+                  "tools": [
+                    {
+                      "id": "3ba6ff51-6e03-491b-b783-2dfea1a99c49",
+                      "createdAt": "2025-09-11T13:38:39.799Z",
+                      "updatedAt": "2025-09-14T08:21:50.958Z",
+                      "type": "function",
+                      "function": {
+                        "name": "calender_slots",
+                        "parameters": {
+                          "type": "object",
+                          "required": [
+                            "date",
+                            "end_time"
+                          ],
+                          "properties": {
+                            "Name": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Name of the caller."
+                            },
+                            "date": {
+                              "type": "string",
+                              "default": "",
+                              "description": "When capturing or outputting appointment times, always use RFC3339 format with Charlotte, NC local timezone.\n\nFormat: YYYY-MM-DDTHH:MM:SS-04:00\n\nYYYY = year (e.g., 2025)\n\nMM = month (01–12)\n\nDD = day (01–31)\n\nT = literal \"T\" separator\n\nHH:MM:SS = time in 24-hour format (e.g., 17:00:00 for 5 PM)\n\n-04:00 = timezone offset for Eastern Time (Charlotte, NC, during daylight saving)\n\n-05:00 = timezone offset for Eastern Time (Charlotte, NC, when not in daylight saving)\n\nExample: If today is September 12, 2025 and the user says \"tomorrow at 5 PM\", the correct format is 2025-09-13T17:00:00-04:00.\n\nExample: If the user says \"next Monday at 10 AM\" and next Monday is September 15, 2025, the correct format is 2025-09-15T10:00:00-04:00.\n\nAlways convert natural language date and time into this format before sending structured booking data.\r\n"
+                            },
+                            "end_time": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Whatever the date and time is, add one hour extra to the hours. For example if the requested time is 3pm, make it 4pm.\n\nuse RFC3339 format with Charlotte, NC local timezone.\r\n\r\nFormat: YYYY-MM-DDTHH:MM:SS-04:00\r\n\r\nYYYY = year (e.g., 2025)\r\n\r\nMM = month (01–12)\r\n\r\nDD = day (01–31)\r\n\r\nT = literal \"T\" separator\r\n\r\nHH:MM:SS = time in 24-hour format (e.g., 17:00:00 for 5 PM)\r\n\r\n-04:00 = timezone offset for Eastern Time (Charlotte, NC, during daylight saving)\r\n\r\n-05:00 = timezone offset for Eastern Time (Charlotte, NC, when not in daylight saving) "
+                            }
+                          }
+                        },
+                        "description": "Use this tool to check if a specific one-hour appointment slot is free.\nThe tool will return \"available: true/fasle\"\n\nIf \"available\": true, proceed with booking the appointment at that time.\nIf \"available\": false, do not book. Instead, politely inform the user the slot is unavailable and ask for another preferred time.\nNever guess availability. Always wait for and use the tool response.\nIf the tool fails or times out, say: “I’m unable to check availability right now. Can you try again in a moment?”"
+                      },
+                      "messages": [
+                        {
+                          "type": "request-start",
+                          "blocking": false
+                        }
+                      ],
+                      "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                      "server": {
+                        "url": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+                        "headers": {
+                          "X-Chat-Id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7"
+                        }
+                      }
+                    },
+                    {
+                      "id": "df09762e-1a88-499e-9c59-9bccff6a8a89",
+                      "createdAt": "2025-09-13T15:10:26.843Z",
+                      "updatedAt": "2025-09-16T19:43:11.630Z",
+                      "type": "function",
+                      "function": {
+                        "name": "create_booking",
+                        "parameters": {
+                          "type": "object",
+                          "required": [
+                            "Name",
+                            "Phone",
+                            "Service",
+                            "Date",
+                            "Email",
+                            "end_time",
+                            "Price"
+                          ],
+                          "properties": {
+                            "Date": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Appointment start time in RFC3339 format with Charlotte, NC timezone (YYYY-MM-DDTHH:MM:SS-04:00 or -05:00 depending on DST)"
+                            },
+                            "Name": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Name of the caller."
+                            },
+                            "Email": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Email of the caller. Send not.available@no.mail if email is not available."
+                            },
+                            "Phone": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Phone number of the caller.\n"
+                            },
+                            "Price": {
+                              "type": "string",
+                              "default": "",
+                              "description": "cost of the service user is booking an appointment for. If the user accepts membership, send 'membership cost + discounted service'. For example if user takes membership of lets say 100$ and it has 10% off and the service costs 100$, send '100$ -> 90$'."
+                            },
+                            "Service": {
+                              "type": "string",
+                              "default": "",
+                              "description": "The service confirmed by the caller.."
+                            },
+                            "end_time": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Whatever the date and time is, add one hour extra to the hours. For example if the requested time is 3pm, make it 4pm.\r\n\r\nuse RFC3339 format with Charlotte, NC local timezone.\r\n\r\nFormat: YYYY-MM-DDTHH:MM:SS-04:00\r\n\r\nYYYY = year (e.g., 2025)\r\n\r\nMM = month (01–12)\r\n\r\nDD = day (01–31)\r\n\r\nT = literal \"T\" separator\r\n\r\nHH:MM:SS = time in 24-hour format (e.g., 17:00:00 for 5 PM)\r\n\r\n-04:00 = timezone offset for Eastern Time (Charlotte, NC, during daylight saving)\r\n\r\n-05:00 = timezone offset for Eastern Time (Charlotte, NC, when not in daylight saving) "
+                            }
+                          }
+                        },
+                        "description": "Use this tool to create a confirmed appointment in the Med Spa’s calendar after the user selects an available slot. This should only be called once all required booking details have been collected and confirmed with the user.\n\nThe tool will return \"available: true/fasle\"\n\nIf \"available\": true, tell them booking is confirmed.\nIf \"available\": false, ask them to try some time later, booking failed due to system error.\nNever guess true/false. Always wait for and use the tool response.\nIf the tool fails or times out, say: “I’m unable to check availability right now. Can you try again in a moment?”\n\n"
+                      },
+                      "messages": [
+                        {
+                          "type": "request-start",
+                          "blocking": false
+                        }
+                      ],
+                      "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                      "server": {
+                        "url": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+                        "headers": {
+                          "X-Chat-Id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ea50f5cd-f731-4e23-969f-e5d6692ce6c6",
+                      "createdAt": "2025-09-13T15:27:58.025Z",
+                      "updatedAt": "2025-09-14T09:28:16.980Z",
+                      "type": "function",
+                      "function": {
+                        "name": "update_booking",
+                        "parameters": {
+                          "type": "object",
+                          "required": [
+                            "Name",
+                            "Email",
+                            "new_date",
+                            "Service",
+                            "Phone",
+                            "end_time",
+                            "Price",
+                            "Previous_date"
+                          ],
+                          "properties": {
+                            "Name": {
+                              "type": "string",
+                              "default": "",
+                              "description": "name of the caller. Customer’s name used for the original booking"
+                            },
+                            "Email": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Customer’s email. if no email is available, use not.available@no.mail"
+                            },
+                            "Phone": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Phone number of the caller."
+                            },
+                            "Price": {
+                              "type": "string",
+                              "default": "",
+                              "description": "cost of the service user is booking an appointment for."
+                            },
+                            "Service": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Service type."
+                            },
+                            "end_time": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Whatever the date and time is, add one hour extra to the hours. For example if the requested time is 3pm, make it 4pm.\r\n\r\nuse RFC3339 format with Charlotte, NC local timezone.\r\n\r\nFormat: YYYY-MM-DDTHH:MM:SS-04:00\r\n\r\nYYYY = year (e.g., 2025)\r\n\r\nMM = month (01–12)\r\n\r\nDD = day (01–31)\r\n\r\nT = literal \"T\" separator\r\n\r\nHH:MM:SS = time in 24-hour format (e.g., 17:00:00 for 5 PM)\r\n\r\n-04:00 = timezone offset for Eastern Time (Charlotte, NC, during daylight saving)\r\n\r\n-05:00 = timezone offset for Eastern Time (Charlotte, NC, when not in daylight saving) "
+                            },
+                            "new_date": {
+                              "type": "string",
+                              "default": "",
+                              "description": "New requested time in RFC3339 format with Charlotte timezone. America/New York"
+                            },
+                            "Previous_date": {
+                              "type": "string",
+                              "default": "",
+                              "description": "previously booked time in RFC3339 format with Charlotte timezone. America/New York"
+                            }
+                          }
+                        },
+                        "description": "Use this tool to update an existing appointment in the Med Spa’s calendar when a customer wants to reschedule or modify details. This should only be called once the caller has confirmed their identity (via email/phone) and provided the new desired details.\n\nThe tool will return \"available: true/fasle\"\n\nIf \"available\": true, tell them it is updated.\nIf \"available\": false, tell them you did not find any appointment against the provided phone number.\nNever guess availability. Always wait for and use the tool response.\nIf the tool fails or times out, say: “I’m unable to check availability right now. Can you try again in a moment?”"
+                      },
+                      "messages": [
+                        {
+                          "type": "request-start",
+                          "blocking": false
+                        }
+                      ],
+                      "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                      "server": {
+                        "url": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+                        "headers": {
+                          "X-Chat-Id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7"
+                        }
+                      }
+                    },
+                    {
+                      "id": "391de669-04bd-452e-95f6-ee6f388d2804",
+                      "createdAt": "2025-09-13T15:36:31.375Z",
+                      "updatedAt": "2025-09-14T08:34:27.969Z",
+                      "type": "function",
+                      "function": {
+                        "name": "cancel_booking",
+                        "parameters": {
+                          "type": "object",
+                          "required": [
+                            "Name",
+                            "Email",
+                            "Date",
+                            "Phone"
+                          ],
+                          "properties": {
+                            "Date": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Appointment start time in RFC3339 format with Charlotte timezone (YYYY-MM-DDTHH:MM:SS-04:00 or -05:00).\nUser can tell the date in natural language, convert it into the asked format."
+                            },
+                            "Name": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Name of the caller."
+                            },
+                            "Email": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Email of the caller.\nif not available, use not.available@no.mail"
+                            },
+                            "Phone": {
+                              "type": "string",
+                              "default": "",
+                              "description": "Phone number of the caller."
+                            }
+                          }
+                        },
+                        "description": "Use this tool to cancel an existing appointment in the Med Spa’s calendar when a customer requests a cancellation. This should only be called once the caller has confirmed their identity (via email/phone) and provided the appointment date/time.\nThe tool will return \"available: true/fasle\"\n\nIf \"available\": true, Tell them the booking has been cancelled.\nIf \"available\": false, tell them there is not any booking against the provided phone number.\nNever guess True/False. Always wait for and use the tool response.\nIf the tool fails or times out, say: “I’m unable to check availability right now. Can you try again in a moment?”"
+                      },
+                      "messages": [
+                        {
+                          "type": "request-start",
+                          "blocking": false
+                        }
+                      ],
+                      "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                      "server": {
+                        "url": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+                        "headers": {
+                          "X-Chat-Id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ac993bec-0cf6-4ba8-af7c-cd8140452c73",
+                      "createdAt": "2025-09-16T16:06:38.898Z",
+                      "updatedAt": "2025-09-16T16:11:22.436Z",
+                      "type": "function",
+                      "function": {
+                        "name": "services",
+                        "parameters": {
+                          "type": "object",
+                          "required": [],
+                          "properties": {}
+                        },
+                        "description": "This tool will be called whenever there is a call/message. It will get the response which will have the services, their charges, upsell rules and the cost, membership offer, working days and hours."
+                      },
+                      "messages": [
+                        {
+                          "type": "request-start",
+                          "blocking": false
+                        }
+                      ],
+                      "orgId": "e44bfade-288d-4a9c-b21a-016ff5afd0cb",
+                      "server": {
+                        "url": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+                        "headers": {
+                          "X-Chat-Id": "50e4b3d9-04c2-43b4-bff3-7b64069666a7"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "firstMessage": "Helloo . You've reached Glow Aesthetics Med Spa. My name is Nora. How can I help you today?",
+                "voicemailMessage": "Please call back when you're available.",
+                "endCallMessage": "Goodbye.",
+                "transcriber": {
+                  "model": "nova-2",
+                  "language": "en",
+                  "provider": "deepgram"
+                },
+                "analysisPlan": {
+                  "structuredDataPlan": {
+                    "enabled": true,
+                    "messages": [
+                      {
+                        "role": "system",
+                        "content": "Output Format for Webhook\n\nWhen booking is confirmed, example output structured JSON:\n\n{\n  \"intent\": \"create\",\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"Phone\": \"13456789\",\n  \"date\": \"2025-09-20\",\n  \"time\": \"15:00\",\n  \"service\": \"Hydrafacial\"\n}\n\nFor updates/cancellations:\n\n{\n  \"intent\": \"update\",\n  \"email\": \"jane@example.com\",\n  \"Phone\": \"13456789\",\n  \"old_date\": \"2025-09-20\",\n  \"old_time\": \"15:00\",\n  \"new_date\": \"2025-09-22\",\n  \"new_time\": \"11:00\"\n}\n\nJson Schema:\n{{schema}}\n\nOnly respond with the JSON."
+                      },
+                      {
+                        "role": "user",
+                        "content": "Here is the transcript:\n\n{{transcript}}\n\n. Here is the ended reason of the call:\n\n{{endedReason}}\n\n"
+                      }
+                    ]
+                  },
+                  "minMessagesThreshold": 2
+                }
+              }
+            }
+          },
+          "webhookUrl": "https://hellonora.app.n8n.cloud/webhook/vapi-call",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Not available",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete an event": {
+      "main": [
+        [
+          {
+            "node": "Create an event1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Delete an event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete an event1": {
+      "main": [
+        [
+          {
+            "node": "Delete rows or columns from sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Delete an event1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete rows or columns from sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [
+          {
+            "node": "available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "available1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "fd3a25f3-0faf-4608-8ff4-9b7021d474af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2bed7d0ec3bfb0d36e24cdb2b735559f87d360df9c199b631ac53433f502d6c5"
+  },
+  "id": "yrPV7YN33AoRGEFw-2u-H",
+  "tags": []
+}
